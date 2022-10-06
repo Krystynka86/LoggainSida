@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Webside</title>
+</head>
+<body>
+    <!--Menu/Welcome text-->
+    <menu>
+        <h1>Welcome to my webshop!</h1>
+        <h2 id="msg">You are not registered! Please register first!</h2>
+    </menu>
+    
+    <!--Register form-->
+    <div id="reg_form" style = "display: block;">
+        <h4>Registration</h4>
+        <form action="#">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div><br>
+                <label for="psw">Password:</label>
+                <input type="password" id="psw" placeholder="Enter your password">
+            <div><br>
+                <button type="button" onclick="saveRegister()">Register</button>
+            </div>
+        </form>
+    </div>
+
+    <!--Login form-->
+    <div id="login_form" style = "display: none;">
+        <h4>Login</h4>
+        <form action="#">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div><br>
+                <label for="psw">Password:</label>
+                <input type="password" id="psw" placeholder="Enter your password">
+            <div><br>
+                <button type="button" onclick="saveLogin()">Login</button>
+            </div>
+        </form>
+    </div>
+
+    <!--Log out-->
+    <div id="logout" style="display: none;">
+        <h4>This is your account!</h4>
+        <button onclick="Logout()">Logout</button>
+    </div>
+
+    <footer>
+        <p>Krystyna Sajak &copy; 2022</p>
+    </footer>
+</body>
+<script>
+    
+    function saveRegister(){
+        
+        let username, psw;
+        username=document.getElementById("username").value;
+        psw=document.getElementById("psw").value;
+
+        let user_records=new Array();
+        user_records=JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")):[]
+        if(user_records.some((v)=>{return v.username==username})) {
+
+            alert("User already exists, pls login!");
+
+            document.getElementById("msg").innerHTML = "Please login!"; // Welcome msg changes
+            document.getElementById("reg_form").style.display = "none"; // register hides
+            document.getElementById("login_form").style.display = "block"; // login shows
+        } else {
+            user_records.push({
+                "username":username,
+                "psw":psw
+            })
+            localStorage.setItem("users",JSON.stringify(user_records));
+        }
+    }
+
+    function saveLogin() {
+
+        let username, psw;
+
+        username=document.getElementById("username").value;
+        psw=document.getElementById("psw").value;
+
+        let user_records=new Array();
+        user_records=JSON.parse(localStorage.getItem("users"))?JSON.parse(localStorage.getItem("users")):[]
+        if(user_records.some((v)=>{return v.username==username && v.psw==psw})) {
+            
+            let current_user=user_records.filter((v)=>{return v.username==username && v.psw==psw})[0]
+            localStorage.setItem('username',current_user.username);
+            localStorage.setItem('psw',current_user.psw);
+            document.getElementById("msg").innerHTML = "You are logged in!";
+            document.getElementById("login_form").style.display = "none";
+            document.getElementById("logout").style.display="block";
+            } else {
+            alert("Login fail, please try again!");
+            document.getElementById("login_form").style.display = "block";
+            
+        }
+    }
+
+        function Logout() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('psw');
+            document.getElementById("login_form").style.display = "block";
+            document.getElementById("msg").innerHTML = "You are logged out!";
+            document.getElementById("logout").style.display="none";
+            
+        }
+
+</script>
+</html>
